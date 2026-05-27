@@ -1,16 +1,26 @@
+import os
 import asyncio
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.filters import CommandStart
+
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
-from aiogram import F
+from aiogram.filters import CommandStart
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-TOKEN = "8729447640:AAFdEXvQ5NWBlWHcl9UzS9CjxJkqBt-TAj0"
+# ---------------- TOKEN ---------------- #
+
+TOKEN = os.getenv("8729447640:AAEn47uvLdal9qhLkvHMGOLpx2-p_xmmDLw")
+
+if not TOKEN:
+    raise ValueError("BOT_TOKEN environment variable not found!")
+
+# ---------------- BOT ---------------- #
 
 bot = Bot(
     token=TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    default=DefaultBotProperties(
+        parse_mode=ParseMode.HTML
+    )
 )
 
 dp = Dispatcher()
@@ -23,13 +33,13 @@ async def auto_delete(chat_id, user_msg_id=None, bot_msg_id=None):
     try:
         if user_msg_id:
             await bot.delete_message(chat_id, user_msg_id)
-    except:
+    except Exception:
         pass
 
     try:
         if bot_msg_id:
             await bot.delete_message(chat_id, bot_msg_id)
-    except:
+    except Exception:
         pass
 
 # ---------------- START ---------------- #
@@ -40,13 +50,22 @@ async def start_handler(message: types.Message):
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="🇮🇳 Hindi", callback_data="lang_hi")
+                InlineKeyboardButton(
+                    text="🇮🇳 Hindi",
+                    callback_data="lang_hi"
+                )
             ],
             [
-                InlineKeyboardButton(text="🇺🇸 English", callback_data="lang_en")
+                InlineKeyboardButton(
+                    text="🇺🇸 English",
+                    callback_data="lang_en"
+                )
             ],
             [
-                InlineKeyboardButton(text="🗣 Hinglish", callback_data="lang_hinglish")
+                InlineKeyboardButton(
+                    text="🗣 Hinglish",
+                    callback_data="lang_hinglish"
+                )
             ]
         ]
     )
@@ -110,7 +129,9 @@ search, stream aur download kar sakte ho 💫
 
     sent = await callback.message.answer(text)
 
-    await callback.answer("Language set to Hinglish 🥺")
+    await callback.answer(
+        "Language set to Hinglish 🥺"
+    )
 
     asyncio.create_task(
         auto_delete(
@@ -119,11 +140,13 @@ search, stream aur download kar sakte ho 💫
         )
     )
 
-# ---------------- RUN BOT ---------------- #
+# ---------------- MAIN ---------------- #
 
 async def main():
-    print("Bot Started...")
+    print("✅ Bot Started Successfully...")
     await dp.start_polling(bot)
+
+# ---------------- RUN ---------------- #
 
 if __name__ == "__main__":
     asyncio.run(main())
